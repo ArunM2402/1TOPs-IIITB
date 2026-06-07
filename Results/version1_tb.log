@@ -1,0 +1,48 @@
+source tb_debug.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+# run all
+
+Memory loaded:
+  [0x00] = 00500093
+  [0x04] = 00308113
+  [0x08] = 00100073
+Memory Loading OK.
+Reset released at 35000
+
+Cycle-by-cycle trace:
+  Cycle |    PC    | imem_addr | imem_rdata | imem_req | imem_ack
+     0  | 00000004 |  00000004 |  00308113  |    1     |    1
+     1  | 00000008 |  00000008 |  00100073  |    1     |    1
+
+
+
+PC movement check:
+  PC start = 0000000000000004
+  PC end   = 0000000000000008
+  >> PC is moving OK
+  
+  
+Register file after 30 cycles:
+  x0 = 0000000000000000  (expect 0)
+  x1 = 0000000000000005  (expect 5)
+  x2 = 0000000000000008  (expect 8)
+  x2 = 0000000000000006  (expect 6)
+  PC = 0000000000000010  (expect C)
+  
+
+
+IMEM interface check:
+  imem_req  = 1  (expect 1)
+  imem_ack  = 1  (expect 1)
+  imem_addr = 0000000000000008
+  imem_rdata= 00100073
+
+Done.

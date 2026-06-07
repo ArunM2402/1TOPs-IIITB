@@ -1,0 +1,91 @@
+source tb_riscv_core.tcl
+# set curr_wave [current_wave_config]
+# if { [string length $curr_wave] == 0 } {
+#   if { [llength [get_objects]] > 0} {
+#     add_wave /
+#     set_property needs_save false [current_wave_config]
+#   } else {
+#      send_msg_id Add_Wave-1 WARNING "No top level signals found. Simulator will start without a wave window. If you want to open a wave window go to 'File->New Waveform Configuration' or type 'create_wave_config' in the TCL console."
+#   }
+# }
+WARNING: [Wavedata 42-489] Can't add object "/tb_riscv_core/mem" to the wave window because it has 4194304 bits, which exceeds the display limit of 65536 bits.  To change the display limit, use the command "set_property display_limit <new limit> [current_wave_config]".
+# run all
+
+
+[TEST 1] ADDI / register file
+  PASS  ADDI x1=5
+  PASS  ADDI x2=8
+  FAIL  ADDI x3=6
+  PASS  x0 always zero
+
+[TEST 2] LUI / AUIPC
+  FAIL  LUI  x1=0xABCDE000
+  FAIL  AUIPC x2=0x1004
+
+[TEST 3] ALU R-type
+  PASS  ADD  10+3=13
+  PASS  SUB  10-3=7
+  PASS  AND  10&3=2
+  PASS  OR   10|3=11
+  PASS  XOR  10^3=9
+  PASS  SLL  10<<3=80
+  PASS  SRL  10>>3=1
+  PASS  SLT  3<10=1
+  FAIL  SRA -8>>>2=-2
+
+[TEST 4] Load / Store
+  FAIL  LD   64-bit
+  PASS  LW   sign-extend
+  PASS  LH   sign-extend
+  PASS  LB   sign-extend
+  PASS  LBU  zero-extend
+  FAIL  SW/LD roundtrip
+
+[TEST 5] Branches
+  FAIL  BEQ taken    x10=1
+  FAIL  BEQ skip     x9=0
+  FAIL  BNE fallthru x11=1
+  PASS  BLT taken    x12=1
+  FAIL  BLT skip     x8=0
+  FAIL  BGE taken    x13=1
+
+[TEST 6] JAL / JALR
+  PASS  JAL  link  x1=0x04
+  FAIL  JAL  jump  x2=42
+  FAIL  JAL  skip  x9=0
+  FAIL  After JAL  x5=1
+
+[TEST 7] Data Hazard Forwarding
+  PASS  FWD x1=1
+  FAIL  FWD x2=2
+  FAIL  FWD x3=3
+  FAIL  FWD x4=5
+  FAIL  FWD x5=8
+
+[TEST 8] Load-Use Stall
+  FAIL  Load-use x2=100
+  FAIL  Load-use x3=200
+
+[TEST 9] RV64 *W instructions
+  PASS  ADDIW x1=5
+  FAIL  ADDIW x2=3
+  FAIL  ADDW  x3=8
+  FAIL  SUBW  x4=2
+  FAIL  ADDIW x5=-1
+
+[TEST 10] Loop (count to 10)
+  FAIL  Loop x1=10
+
+[TEST 11] M-extension MUL/DIV/REM
+  FAIL  MUL  6*7=42
+  FAIL  DIV  42/7=6
+  FAIL  REM  43%7=1
+  FAIL  DIVU /0=0xFFF...
+
+========================================
+  Results: 19 PASSED  /  29 FAILED
+========================================
+  FAILURES DETECTED - check above
+$finish called at time : 100935 ns : File "/home/arunp24/project_core/project_core.srcs/sim_1/imports/files/tb_riscv_core.sv" Line 645
+INFO: [USF-XSim-96] XSim completed. Design snapshot 'tb_riscv_core_behav' loaded.
+INFO: [USF-XSim-97] XSim simulation ran for all
