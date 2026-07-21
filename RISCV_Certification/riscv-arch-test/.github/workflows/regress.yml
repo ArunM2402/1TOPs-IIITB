@@ -1,0 +1,295 @@
+# jcarlin@hmc.edu 19 Nov 2025
+# SPDX-License-Identifier: Apache-2.0
+
+name: ACT Regression
+
+on:
+  push:
+  pull_request:
+
+# Only run CI on the latest commit if a PR is updated
+concurrency:
+  group: "${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}"
+  cancel-in-progress: true
+
+env:
+  SAIL_VERSION: "0.12"
+  RISCV_TOOLCHAIN_VERSION: "2026.06.06"
+  LLVM_VERSION: "22"
+
+jobs:
+  lint:
+    name: Pre-commit (prek) check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Set up mise
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
+
+      - name: Run prek
+        uses: j178/prek-action@bdca6f102f98e2b4c7029491a53dfd366469e33d # v2.0.4
+
+  # Data-driven regression.
+  # Configs are auto-discovered from the config directory.
+  # Simulator/core wide setup is in config/<simulator>/ci.yaml.
+  # The config-specific execution command is in config/<simulator>/<config>/run_cmd.txt.
+  # To add a new simulator or config, just add the config files — no workflow changes needed.
+  discover-configs:
+    name: Discover CI Configs
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.discover.outputs.matrix }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+
+      - name: Discover CI configs
+        id: discover
+        run: echo "matrix=$(.github/scripts/ci_config.py)" >> "$GITHUB_OUTPUT"
+
+  regress:
+    name: ${{ matrix.simulator }} (${{ matrix.config }})
+    needs: discover-configs
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{ fromJson(needs.discover-configs.outputs.matrix) }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Set up mise
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
+
+      - name: Install sail-riscv model
+        run: |
+          sudo mkdir -p /usr/local
+          curl --location https://github.com/riscv/sail-riscv/releases/download/${SAIL_VERSION}/sail-riscv-$(uname)-$(arch).tar.gz \
+          | sudo tar xvz --directory=/usr/local --strip-components=1
+
+      - name: Install RISC-V GCC toolchain
+        run: |
+          curl --location https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/${RISCV_TOOLCHAIN_VERSION}/riscv64-elf-ubuntu-24.04-gcc.tar.xz \
+          | sudo tar xvJ --directory=/usr/local --strip-components=1
+
+      - name: Install Clang
+        run: |
+          retry() {
+            local max_attempts="$1"
+            shift
+            local attempt=1
+            while ! "$@"; do
+              if [ "$attempt" -ge "$max_attempts" ]; then
+                echo "Command failed after ${attempt} attempts: $*"
+                return 1
+              fi
+              local backoff=$((attempt * 10))
+              echo "Attempt ${attempt} failed: $*"
+              echo "Retrying in ${backoff}s..."
+              sleep "$backoff"
+              attempt=$((attempt + 1))
+            done
+          }
+
+          curl --fail --location --retry 5 --retry-all-errors --retry-delay 5 \
+            https://apt.llvm.org/llvm.sh \
+            --output /tmp/llvm.sh
+          chmod +x /tmp/llvm.sh
+
+          retry 3 sudo bash /tmp/llvm.sh "$LLVM_VERSION"
+          retry 3 sudo apt-get update
+          retry 3 sudo apt-get install -y -o Acquire::Retries=3 \
+            clang-$LLVM_VERSION lld-$LLVM_VERSION llvm-$LLVM_VERSION
+          for tool in clang clang++ lld llvm-objdump llvm-as llvm-ar llvm-nm llvm-readelf; do
+            sudo ln -sf /usr/bin/${tool}-$LLVM_VERSION /usr/bin/${tool}
+          done
+
+      - name: Install runtime dependencies
+        if: matrix.apt_packages != ''
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ${{ matrix.apt_packages }}
+
+      - name: Restore cached simulator
+        if: matrix.cache_key != ''
+        id: cache-restore
+        uses: actions/cache/restore@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: ${{ github.workspace }}/${{ matrix.simulator }}
+          key: ${{ matrix.cache_key }}
+
+      - name: Install simulator
+        if: matrix.install_script != '' && steps.cache-restore.outputs.cache-hit != 'true'
+        run: bash ${{ matrix.install_script }} ${{ github.workspace }}/${{ matrix.simulator }}
+
+      - name: Save cached simulator
+        if: matrix.cache_key != '' && steps.cache-restore.outputs.cache-hit != 'true'
+        uses: actions/cache/save@caa296126883cff596d87d8935842f9db880ef25 # v5
+        with:
+          path: ${{ github.workspace }}/${{ matrix.simulator }}
+          key: ${{ matrix.cache_key }}
+
+      - name: Add simulator to PATH
+        if: matrix.install_script != ''
+        run: echo "$GITHUB_WORKSPACE/${{ matrix.simulator }}/bin" >> $GITHUB_PATH
+
+      - name: Run setup script
+        if: matrix.setup_script != ''
+        run: bash ${{ matrix.setup_script }} ${{ github.workspace }}/${{ matrix.simulator }}
+
+      - name: Generate tests and coverpoints
+        run: make tests --jobs $(nproc)
+
+      - name: Build ELFs
+        run: |
+          FAST=True \
+          EXCLUDE_EXTENSIONS=${{ matrix.exclude_extensions }} \
+          CONFIG_FILES=${{ matrix.config_file }} \
+          make elfs --jobs $(nproc)
+
+      - name: Run tests
+        if: matrix.run_cmd != ''
+        run: |
+          ./run_tests.py "${{ matrix.run_cmd }}" \
+          work/${{ matrix.config }}/elfs
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: ${{ matrix.config }}-logs
+          path: work/${{ matrix.config }}/logs
+
+  vector-testgen:
+    name: Vector Testgen
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Set up mise
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
+
+      - name: Generate vector tests
+        run: make vector-tests --jobs $(nproc)
+
+  ctp-build:
+    name: Build CTP
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Set up mise
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
+
+      - run: git submodule update --init docs/docs-resources
+
+      - name: Build CTP
+        run: cd docs/ctp && make -j2
+
+  crd-build:
+    name: Build CRD
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - run: git submodule update --init docs/docs-resources
+
+      - name: Build CRD
+        run: cd docs/crd && make -j2
+
+  check-tests:
+    name: Check generated tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Set up mise
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
+
+      - name: Regenerate tests and coverpoints
+        run: make clean-tests tests
+
+      - name: Check for differences
+        run: |
+          dirs="tests/rv32i tests/rv32e tests/rv64i tests/rv64e coverpoints/unpriv coverpoints/coverage"
+          changed=$(git diff --name-only -- $dirs)
+          untracked=$(git ls-files --others --exclude-standard -- $dirs)
+          if [ -n "$changed" ] || [ -n "$untracked" ]; then
+            echo "::error::Checked-in generated files are out of sync with the generators. Run 'make tests' and commit the results."
+            [ -n "$changed" ] && echo "Changed files:" && git diff -- $dirs
+            [ -n "$untracked" ] && echo "New files:" && echo "$untracked"
+            exit 1
+          fi
+          echo "Checked-in generated files are up to date."
+
+  # Test testgen and framework with oldest supported Python version
+  python-versions:
+    name: Python ${{ matrix.python-version }} (uv)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+
+      - name: Pin Python version for this job
+        run: echo "${{ matrix.python-version }}" > .python-version
+
+      - name: Set up mise
+        uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
+
+      - name: Verify Python version
+        run: uv run python --version
+
+      - name: Install sail-riscv model
+        run: |
+          sudo mkdir -p /usr/local
+          curl --location https://github.com/riscv/sail-riscv/releases/download/${SAIL_VERSION}/sail-riscv-$(uname)-$(arch).tar.gz \
+          | sudo tar xvz --directory=/usr/local --strip-components=1
+
+      - name: Install RISC-V GCC toolchain
+        run: |
+          curl --location https://github.com/riscv-collab/riscv-gnu-toolchain/releases/download/${RISCV_TOOLCHAIN_VERSION}/riscv64-elf-ubuntu-24.04-gcc.tar.xz \
+          | sudo tar xvJ --directory=/usr/local --strip-components=1
+
+      - name: Build ELFs (exercises full act build DAG)
+        run: |
+          FAST=True \
+          EXTENSIONS=I \
+          make
+
+  # This is here so that the "Status checks that are required" Github
+  # option doesn't need to list all of the matrix jobs (it doesn't seem
+  # to work if you just specify the job ID of the matrix itself).
+  ci_pass:
+    runs-on: ubuntu-latest
+    needs:
+      [
+        lint,
+        regress,
+        vector-testgen,
+        check-tests,
+        python-versions,
+        ctp-build,
+        crd-build,
+      ]
+    if: "${{ always() }}"
+    steps:
+      - name: Job status check
+        env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          for result in $RESULTS; do
+            [[ "$result" == "success" ]] || exit 1
+          done
