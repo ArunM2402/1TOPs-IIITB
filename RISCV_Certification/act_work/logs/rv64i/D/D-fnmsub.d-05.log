@@ -1,0 +1,16 @@
+
+****** xsim v2023.1 (64-bit)
+  **** SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+  **** IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+  **** SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+    ** Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+
+source xsim.dir/tb_act_sim/xsim_script.tcl
+# xsim {tb_act_sim} -testplusarg HEX_FILE=../act_work/hex/rv64i/D/D-fnmsub.d-05.hex -testplusarg TOHOST=473600 -testplusarg SIG_START=337344 -testplusarg SIG_END=473456 -testplusarg SIG_FILE=../act_work/signatures/rv64i/D/D-fnmsub.d-05.sig -autoloadwcfg -runall
+Time resolution is 1 ps
+run -all
+HTIF_FAIL cycle=6551
+$finish called at time : 65605 ns : File "/home/nipun/Nipun/1TOPS/1TOPs-IIITB/RISCV_Certification/tb_act.sv" Line 139
+exit
+INFO: [Common 17-206] Exiting xsim at Tue Jun 30 12:20:19 2026...

@@ -1,0 +1,18 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/nipun/Nipun/1TOPS/1TOPs-IIITB/RISCV_Certification/tb_act.sv" into library work
+INFO: [VRFC 10-311] analyzing module tb_act
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/nipun/Nipun/1TOPS/1TOPs-IIITB/RTL/core/riscv_core.sv" into library work
+INFO: [VRFC 10-311] analyzing module riscv_core
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/nipun/Nipun/1TOPS/1TOPs-IIITB/RTL/core/alu_unit.sv" into library work
+INFO: [VRFC 10-311] analyzing module alu_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/nipun/Nipun/1TOPS/1TOPs-IIITB/RTL/core/branch_unit.sv" into library work
+INFO: [VRFC 10-311] analyzing module branch_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/nipun/Nipun/1TOPS/1TOPs-IIITB/RTL/core/csr_file.sv" into library work
+INFO: [VRFC 10-311] analyzing module csr_file
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/nipun/Nipun/1TOPS/1TOPs-IIITB/RTL/core/decode_unit.sv" into library work
+INFO: [VRFC 10-311] analyzing module decode_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/nipun/Nipun/1TOPS/1TOPs-IIITB/RTL/core/exp_handler.sv" into library work
+INFO: [VRFC 10-311] analyzing module trap_detector
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/nipun/Nipun/1TOPS/1TOPs-IIITB/RTL/core/hazard_unit.sv" into library work
+INFO: [VRFC 10-311] analyzing module hazard_unit
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "/home/nipun/Nipun/1TOPS/1TOPs-IIITB/RTL/core/mmu_sv39.sv" into library work
+INFO: [VRFC 10-311] analyzing module mmu_sv39

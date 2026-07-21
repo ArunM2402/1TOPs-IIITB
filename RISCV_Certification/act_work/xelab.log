@@ -1,0 +1,22 @@
+Vivado Simulator v2023.1
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2023 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: /tools/Xilinx/Vivado/2023.1/bin/unwrapped/lnx64.o/xelab tb_act -s tb_act_sim -timescale 1ns/1ps -i ../../RTL/core 
+Multi-threading is on. Using 30 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling package work.$unit_tb_act_sv_3608312017
+Compiling module work.csr_file
+Compiling module work.hazard_unit
+Compiling module work.mmu_sv39_default
+Compiling module work.decode_unit
+Compiling module work.alu_unit
+Compiling module work.branch_unit
+Compiling module work.trap_detector
+Compiling module work.riscv_core
+Compiling module work.tb_act
+Built simulation snapshot tb_act_sim

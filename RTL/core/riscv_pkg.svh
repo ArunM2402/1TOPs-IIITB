@@ -20,7 +20,8 @@ localparam [6:0]
     OP_OP32    = 7'b011_1011,
     OP_SYSTEM  = 7'b111_0011;
 
-typedef enum logic [4:0] {
+typedef logic [4:0] alu_op_t;
+localparam alu_op_t
     ALU_ADD   = 5'h00,
     ALU_SUB   = 5'h01,
     ALU_SLL   = 5'h02,
@@ -40,8 +41,7 @@ typedef enum logic [4:0] {
     ALU_DIVU  = 5'h10,
     ALU_REM   = 5'h11,
     ALU_REMU  = 5'h12,
-    ALU_PASS_B= 5'h13
-} alu_op_t;
+    ALU_PASS_B= 5'h13;
 
 localparam [1:0]
     CSR_NOP = 2'b00,

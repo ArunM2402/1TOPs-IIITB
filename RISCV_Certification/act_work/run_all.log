@@ -1,0 +1,140 @@
+=== Compilation complete ===
+============================================
+ Running 131 RISC-V Arch Tests
+============================================
+[  1/131] rv64i/I/I-add-00                                   PASS
+[  2/131] rv64i/I/I-addi-00                                  PASS
+[  3/131] rv64i/I/I-addiw-00                                 PASS
+[  4/131] rv64i/I/I-addw-00                                  PASS
+[  5/131] rv64i/I/I-and-00                                   PASS
+[  6/131] rv64i/I/I-andi-00                                  PASS
+[  7/131] rv64i/I/I-auipc-00                                 PASS
+[  8/131] rv64i/I/I-beq-00                                   PASS
+[  9/131] rv64i/I/I-bge-00                                   PASS
+[ 10/131] rv64i/I/I-bgeu-00                                  PASS
+[ 11/131] rv64i/I/I-blt-00                                   PASS
+[ 12/131] rv64i/I/I-bltu-00                                  PASS
+[ 13/131] rv64i/I/I-bne-00                                   PASS
+[ 14/131] rv64i/I/I-fence-00                                 PASS
+[ 15/131] rv64i/I/I-jal-00                                   PASS
+[ 16/131] rv64i/I/I-jalr-00                                  PASS
+[ 17/131] rv64i/I/I-lb-00                                    PASS
+[ 18/131] rv64i/I/I-lbu-00                                   PASS
+[ 19/131] rv64i/I/I-ld-00                                    PASS
+[ 20/131] rv64i/I/I-lh-00                                    PASS
+[ 21/131] rv64i/I/I-lhu-00                                   PASS
+[ 22/131] rv64i/I/I-lui-00                                   PASS
+[ 23/131] rv64i/I/I-lw-00                                    PASS
+[ 24/131] rv64i/I/I-lwu-00                                   PASS
+[ 25/131] rv64i/I/I-nop-00                                   PASS
+[ 26/131] rv64i/I/I-or-00                                    PASS
+[ 27/131] rv64i/I/I-ori-00                                   PASS
+[ 28/131] rv64i/I/I-sb-00                                    FAIL
+[ 29/131] rv64i/I/I-sd-00                                    PASS
+[ 30/131] rv64i/I/I-sh-00                                    FAIL
+[ 31/131] rv64i/I/I-sll-00                                   PASS
+[ 32/131] rv64i/I/I-slli-00                                  PASS
+[ 33/131] rv64i/I/I-slliw-00                                 PASS
+[ 34/131] rv64i/I/I-sllw-00                                  PASS
+[ 35/131] rv64i/I/I-slt-00                                   PASS
+[ 36/131] rv64i/I/I-slti-00                                  PASS
+[ 37/131] rv64i/I/I-sltiu-00                                 PASS
+[ 38/131] rv64i/I/I-sltu-00                                  PASS
+[ 39/131] rv64i/I/I-sra-00                                   PASS
+[ 40/131] rv64i/I/I-srai-00                                  PASS
+[ 41/131] rv64i/I/I-sraiw-00                                 PASS
+[ 42/131] rv64i/I/I-sraw-00                                  PASS
+[ 43/131] rv64i/I/I-srl-00                                   PASS
+[ 44/131] rv64i/I/I-srli-00                                  PASS
+[ 45/131] rv64i/I/I-srliw-00                                 FAIL
+[ 46/131] rv64i/I/I-srlw-00                                  FAIL
+[ 47/131] rv64i/I/I-sub-00                                   PASS
+[ 48/131] rv64i/I/I-subw-00                                  PASS
+[ 49/131] rv64i/I/I-sw-00                                    FAIL
+[ 50/131] rv64i/I/I-xor-00                                   PASS
+[ 51/131] rv64i/I/I-xori-00                                  PASS
+[ 52/131] rv64i/M/M-div-00                                   PASS
+[ 53/131] rv64i/M/M-divu-00                                  PASS
+[ 54/131] rv64i/M/M-divuw-00                                 FAIL
+[ 55/131] rv64i/M/M-divw-00                                  PASS
+[ 56/131] rv64i/M/M-mul-00                                   PASS
+[ 57/131] rv64i/M/M-mulh-00                                  FAIL
+[ 58/131] rv64i/M/M-mulhsu-00                                FAIL
+[ 59/131] rv64i/M/M-mulhu-00                                 PASS
+[ 60/131] rv64i/M/M-mulw-00                                  PASS
+[ 61/131] rv64i/M/M-rem-00                                   PASS
+[ 62/131] rv64i/M/M-remu-00                                  PASS
+[ 63/131] rv64i/M/M-remuw-00                                 FAIL
+[ 64/131] rv64i/M/M-remw-00                                  PASS
+[ 65/131] rv64i/Zaamo/Zaamo-amoadd.d-00                      TIMEOUT
+[ 66/131] rv64i/Zaamo/Zaamo-amoadd.w-00                      TIMEOUT
+[ 67/131] rv64i/Zaamo/Zaamo-amoand.d-00                      TIMEOUT
+[ 68/131] rv64i/Zaamo/Zaamo-amoand.w-00                      TIMEOUT
+[ 69/131] rv64i/Zaamo/Zaamo-amomax.d-00                      TIMEOUT
+[ 70/131] rv64i/Zaamo/Zaamo-amomaxu.d-00                     TIMEOUT
+[ 71/131] rv64i/Zaamo/Zaamo-amomaxu.w-00                     TIMEOUT
+[ 72/131] rv64i/Zaamo/Zaamo-amomax.w-00                      TIMEOUT
+[ 73/131] rv64i/Zaamo/Zaamo-amomin.d-00                      TIMEOUT
+[ 74/131] rv64i/Zaamo/Zaamo-amominu.d-00                     TIMEOUT
+[ 75/131] rv64i/Zaamo/Zaamo-amominu.w-00                     TIMEOUT
+[ 76/131] rv64i/Zaamo/Zaamo-amomin.w-00                      TIMEOUT
+[ 77/131] rv64i/Zaamo/Zaamo-amoor.d-00                       TIMEOUT
+[ 78/131] rv64i/Zaamo/Zaamo-amoor.w-00                       TIMEOUT
+[ 79/131] rv64i/Zaamo/Zaamo-amoswap.d-00                     TIMEOUT
+[ 80/131] rv64i/Zaamo/Zaamo-amoswap.w-00                     TIMEOUT
+[ 81/131] rv64i/Zaamo/Zaamo-amoxor.d-00                      TIMEOUT
+[ 82/131] rv64i/Zaamo/Zaamo-amoxor.w-00                      TIMEOUT
+[ 83/131] rv64i/Zalrsc/Zalrsc-lr.d-00                        PASS
+[ 84/131] rv64i/Zalrsc/Zalrsc-lr.w-00                        FAIL
+[ 85/131] rv64i/Zalrsc/Zalrsc-sc.d-00                        TIMEOUT
+[ 86/131] rv64i/Zalrsc/Zalrsc-sc.w-00                        TIMEOUT
+[ 87/131] rv64i/Zca/Zca-c.add-00                             TIMEOUT
+[ 88/131] rv64i/Zca/Zca-c.addi-00                            FAIL
+[ 89/131] rv64i/Zca/Zca-c.addi16sp-00                        PASS
+[ 90/131] rv64i/Zca/Zca-c.addi4spn-00                        PASS
+[ 91/131] rv64i/Zca/Zca-c.addiw-00                           FAIL
+[ 92/131] rv64i/Zca/Zca-c.addw-00                            FAIL
+[ 93/131] rv64i/Zca/Zca-c.and-00                             FAIL
+[ 94/131] rv64i/Zca/Zca-c.andi-00                            FAIL
+[ 95/131] rv64i/Zca/Zca-c.beqz-00                            FAIL
+[ 96/131] rv64i/Zca/Zca-c.bnez-00                            FAIL
+[ 97/131] rv64i/Zca/Zca-c.j-00                               FAIL
+[ 98/131] rv64i/Zca/Zca-c.jalr-00                            TIMEOUT
+[ 99/131] rv64i/Zca/Zca-c.jr-00                              TIMEOUT
+[100/131] rv64i/Zca/Zca-c.ld-00                              FAIL
+[101/131] rv64i/Zca/Zca-c.ldsp-00                            FAIL
+[102/131] rv64i/Zca/Zca-c.li-00                              FAIL
+[103/131] rv64i/Zca/Zca-c.lui-00                             FAIL
+[104/131] rv64i/Zca/Zca-c.lw-00                              FAIL
+[105/131] rv64i/Zca/Zca-c.lwsp-00                            FAIL
+[106/131] rv64i/Zca/Zca-c.mv-00                              TIMEOUT
+[107/131] rv64i/Zca/Zca-c.nop-00                             PASS
+[108/131] rv64i/Zca/Zca-c.or-00                              FAIL
+[109/131] rv64i/Zca/Zca-c.sd-00                              TIMEOUT
+[110/131] rv64i/Zca/Zca-c.sdsp-00                            TIMEOUT
+[111/131] rv64i/Zca/Zca-c.slli-00                            FAIL
+[112/131] rv64i/Zca/Zca-c.srai-00                            FAIL
+[113/131] rv64i/Zca/Zca-c.srli-00                            FAIL
+[114/131] rv64i/Zca/Zca-c.sub-00                             FAIL
+[115/131] rv64i/Zca/Zca-c.subw-00                            FAIL
+[116/131] rv64i/Zca/Zca-c.sw-00                              TIMEOUT
+[117/131] rv64i/Zca/Zca-c.swsp-00                            TIMEOUT
+[118/131] rv64i/Zca/Zca-c.xor-00                             FAIL
+[119/131] rv64i/Zcd/Zcd-c.fld-00                             FAIL
+[120/131] rv64i/Zcd/Zcd-c.fldsp-00                           FAIL
+[121/131] rv64i/Zcd/Zcd-c.fsd-00                             TIMEOUT
+[122/131] rv64i/Zcd/Zcd-c.fsdsp-00                           FAIL
+[123/131] rv64i/Zicntr/Zicntr-csrrc-00                       TIMEOUT
+[124/131] rv64i/Zicntr/Zicntr-csrrs-00                       TIMEOUT
+[125/131] rv64i/Zicsr/Zicsr-csrrc-00                         PASS
+[126/131] rv64i/Zicsr/Zicsr-csrrci-00                        PASS
+[127/131] rv64i/Zicsr/Zicsr-csrrs-00                         PASS
+[128/131] rv64i/Zicsr/Zicsr-csrrsi-00                        PASS
+[129/131] rv64i/Zicsr/Zicsr-csrrw-00                         PASS
+[130/131] rv64i/Zicsr/Zicsr-csrrwi-00                        PASS
+[131/131] rv64i/Zifencei/Zifencei-fence.i-00                 FAIL
+
+============================================
+ RESULTS: 65 PASS / 35 FAIL / 31 TIMEOUT / 0 ERROR
+ Total:   131 tests
+============================================

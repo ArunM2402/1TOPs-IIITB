@@ -64,6 +64,7 @@ logic [63:0] mscratch, mepc, mcause, mtval, mip;
 
 // Supervisor trap setup
 logic [63:0] sstatus, stvec, sedeleg, sideleg, sie, scounteren;
+logic [63:0] fcsr;
 
 // Supervisor trap handling
 logic [63:0] sscratch, sepc, scause, stval, sip;
@@ -184,6 +185,10 @@ always_comb begin
         12'h305: csr_rdata = mtvec;
         12'h306: csr_rdata = mcounteren;
 
+        12'h001: csr_rdata = fcsr & 64'h1F;       // fflags
+        12'h002: csr_rdata = (fcsr >> 5) & 64'h7; // frm
+        12'h003: csr_rdata = fcsr;                // fcsr
+
         
         12'h340: csr_rdata = mscratch;
         12'h341: csr_rdata = mepc;
@@ -289,6 +294,7 @@ always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         priv        <= PRIV_M;
         mstatus     <= 64'h0000_0000_0000_0000;
+        fcsr        <= 64'h0;
         mtvec       <= 64'h0;
         medeleg     <= 64'h0;
         mideleg     <= 64'h0;
@@ -317,7 +323,8 @@ always_ff @(posedge clk or negedge rst_n) begin
 
         
         if (trap_valid || irq_pending) begin
-            automatic logic [63:0] t_cause = irq_pending ? irq_cause : trap_cause;
+            logic [63:0] t_cause;
+            t_cause = irq_pending ? irq_cause : trap_cause;
             if (priv <= PRIV_S && medeleg[t_cause[5:0]] && !t_cause[63]) begin
                 
                 scause <= t_cause;
@@ -366,6 +373,9 @@ always_ff @(posedge clk or negedge rst_n) begin
                 12'h304: mie        <= csr_modify(mie,        csr_wdata, csr_op);
                 12'h305: mtvec      <= csr_modify(mtvec,      csr_wdata, csr_op);
                 12'h306: mcounteren <= csr_modify(mcounteren, csr_wdata, csr_op);
+                12'h001: fcsr       <= (fcsr & ~64'h1F) | (csr_modify(fcsr & 64'h1F, csr_wdata, csr_op) & 64'h1F);
+                12'h002: fcsr       <= (fcsr & ~64'hE0) | ((csr_modify((fcsr >> 5) & 64'h7, csr_wdata, csr_op) & 64'h7) << 5);
+                12'h003: fcsr       <= csr_modify(fcsr,       csr_wdata, csr_op);
                 12'h340: mscratch   <= csr_modify(mscratch,   csr_wdata, csr_op);
                 12'h341: mepc       <= csr_modify(mepc,       csr_wdata, csr_op) & ~64'h1;
                 12'h342: mcause     <= csr_modify(mcause,     csr_wdata, csr_op);

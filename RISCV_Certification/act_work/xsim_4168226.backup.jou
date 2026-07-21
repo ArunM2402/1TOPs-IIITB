@@ -1,0 +1,15 @@
+#-----------------------------------------------------------
+# xsim v2023.1 (64-bit)
+# SW Build 3865809 on Sun May  7 15:04:56 MDT 2023
+# IP Build 3864474 on Sun May  7 20:36:21 MDT 2023
+# SharedData Build 3865790 on Sun May 07 13:33:03 MDT 2023
+# Start of session at: Tue Jun 30 13:21:09 2026
+# Process ID: 4168226
+# Current directory: /home/nipun/Nipun/1TOPS/1TOPs-IIITB/RISCV_Certification/act_work
+# Command line: xsim -mode tcl -source {xsim.dir/tb_act_sim/xsim_script.tcl}
+# Log file: /home/nipun/Nipun/1TOPS/1TOPs-IIITB/RISCV_Certification/act_work/xsim.log
+# Journal file: /home/nipun/Nipun/1TOPS/1TOPs-IIITB/RISCV_Certification/act_work/xsim.jou
+# Running On: nipun, OS: Linux, CPU Frequency: 5299.856 MHz, CPU Physical cores: 32, Host memory: 134114 MB
+#-----------------------------------------------------------
+source xsim.dir/tb_act_sim/xsim_script.tcl
+run -all

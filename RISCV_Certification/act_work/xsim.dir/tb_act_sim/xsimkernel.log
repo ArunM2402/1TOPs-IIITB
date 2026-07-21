@@ -1,0 +1,7 @@
+Running: xsim.dir/tb_act_sim/xsimk -runall -simmode gui -testplusarg HEX_FILE=../act_work/hex/rv64i/Zifencei/Zifencei-fence.i-00.hex -testplusarg TOHOST=145152 -testplusarg SIG_START=24784 -testplusarg SIG_END=144928 -testplusarg SIG_FILE=../act_work/signatures/rv64i/Zifencei/Zifencei-fence.i-00.sig -wdb tb_act_sim.wdb -simrunnum 0 -socket 53581
+Design successfully loaded
+Design Loading Memory Usage: 23384 KB (Peak: 23384 KB)
+Design Loading CPU Usage: 0 ms
+Simulation completed
+Simulation Memory Usage: 110188 KB (Peak: 162652 KB)
+Simulation CPU Usage: 100 ms

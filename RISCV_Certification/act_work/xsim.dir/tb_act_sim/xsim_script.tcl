@@ -1,0 +1,1 @@
+xsim {tb_act_sim} -testplusarg HEX_FILE=../act_work/hex/rv64i/Zifencei/Zifencei-fence.i-00.hex -testplusarg TOHOST=145152 -testplusarg SIG_START=24784 -testplusarg SIG_END=144928 -testplusarg SIG_FILE=../act_work/signatures/rv64i/Zifencei/Zifencei-fence.i-00.sig -autoloadwcfg -runall

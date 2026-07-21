@@ -1,0 +1,1 @@
+"tb_act" -s "tb_act_sim" -timescale "1ns/1ps" -i "../../RTL/core" 
